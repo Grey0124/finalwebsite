@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins as FontSans } from 'next/font/google'
 import "./globals.css";
+import React from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,6 +18,12 @@ export const metadata: Metadata = {
   title: "Makers Market",
   description: "Artisan shop and creative classes",
 };
+
+const fontSans = FontSans({
+  subsets: ['latin'],
+  weight: ['400', '600'],
+  variable: '--font-sans',
+})
 
 export default function RootLayout({
   children,
