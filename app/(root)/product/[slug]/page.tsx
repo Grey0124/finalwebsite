@@ -6,7 +6,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import { getProductBySlug } from '@/lib/actions/product.actions'
 import { APP_NAME } from '@/lib/constants'
 import { Button } from '@/components/ui/button'
-
 export async function generateMetadata({
   params,
 }: {
