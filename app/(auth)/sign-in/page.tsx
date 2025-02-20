@@ -17,15 +17,17 @@ export const metadata: Metadata = {
   title: `Sign In - ${APP_NAME}`,
 }
 
+type SearchParams = Promise<{ [key: string]: string }>
+
 export default async function SignIn({
-  searchParams: { callbackUrl },
+  //searchParams: { callbackUrl },
+  searchParams,
 }: {
-  searchParams: {
-    callbackUrl: string
-  }
+  searchParams: SearchParams
 }) {
   const session = await auth()
   if (session) {
+    const {callbackUrl} = await searchParams
     return redirect(callbackUrl || '/')
   }
   return (

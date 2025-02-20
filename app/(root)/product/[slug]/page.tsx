@@ -6,12 +6,17 @@ import { Card, CardContent } from '@/components/ui/card'
 import { getProductBySlug } from '@/lib/actions/product.actions'
 import { APP_NAME } from '@/lib/constants'
 import { Button } from '@/components/ui/button'
+
+type Params = Promise<{ slug: string }>
+type SearchParams = Promise<{ [key: string]: string }>
+
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string }
+  params: Params
 }) {
-  const product = await getProductBySlug(params.slug)
+  const{slug} =await params
+  const product = await getProductBySlug(slug)
   if (!product) {
     return { title: 'Product not found' }
   }
@@ -21,11 +26,12 @@ export async function generateMetadata({
   }
 }
 const ProductDetails = async ({
-  params: { slug },
+  params,
 }: {
-  params: { slug: string }
-  searchParams: { page: string; color: string; size: string }
+  params: Params
+  searchParams: SearchParams
 }) => {
+  const {slug} = await params
   const product = await getProductBySlug(slug)
   if (!product) notFound()
   return (
