@@ -23,6 +23,7 @@ import {
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
     address: json('address').$type<ShippingAddress>(),
+    paymentMethod: text('paymentMethod'),
   })
    
   export const accounts = pgTable(
