@@ -1,6 +1,6 @@
 import { AdapterAccountType } from 'next-auth/adapters'
 import { primaryKey } from 'drizzle-orm/pg-core/primary-keys'
-import { CartItem } from '@/types'
+import { CartItem, ShippingAddress } from '@/types'
 import {
     boolean,
     integer,
@@ -22,6 +22,7 @@ import {
     password: text('password'),
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
+    address: json('address').$type<ShippingAddress>(),
   })
    
   export const accounts = pgTable(
