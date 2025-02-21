@@ -34,7 +34,7 @@ export const insertProductSchema = createSelectSchema(products, {
   rating: true,
   numReviews: true,
   createdAt: true,
-  banner:true,
+
 })
 
 export const updateProductSchema = createSelectSchema(products, {
