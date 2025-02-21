@@ -22,19 +22,18 @@ export const metadata: Metadata = {
 
 type SearchParams = Promise<{ [key: string]: string  }>
 
-export default async function OrdersPage({
-  searchParams,
-}: {
+export default async function OrdersPage(props: {
   searchParams: SearchParams
+ 
 }) {
-    const params = await searchParams
-    const key = params.key || "1"
+  const searchParams = await props.searchParams
+    const page = searchParams.page || "1"
   const session = await auth()
   if (session?.user.role !== 'admin')
     throw new Error('admin permission required')
 
   const orders = await getAllOrders({
-    page: Number(key),
+    page: Number(page),
   })
 
   return (
@@ -85,7 +84,7 @@ export default async function OrdersPage({
           </TableBody>
         </Table>
         {orders.totalPages > 1 && (
-          <Pagination page={key} totalPages={orders?.totalPages!} />
+          <Pagination page={page} totalPages={orders?.totalPages!} />
         )}
       </div>
     </div>
