@@ -101,3 +101,14 @@ body {
     @apply font-bold text-xl lg:text-2xl;
   }
 }
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

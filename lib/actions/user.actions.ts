@@ -7,6 +7,7 @@ import {
   shippingAddressSchema,
   signInFormSchema,
   signUpFormSchema,
+  updateUserSchema,
 } from '../validator'
 import { formatError } from '../utils'
 import { hashSync } from 'bcrypt-ts-edge'
@@ -121,6 +122,25 @@ export async function deleteUser(id: string) {
 }
 
 //UPDATE
+
+export async function updateUser(user: z.infer<typeof updateUserSchema>) {
+  try {
+    await db
+      .update(users)
+      .set({
+        name: user.name,
+        role: user.role,
+      })
+      .where(eq(users.id, user.id))
+    revalidatePath('/admin/users')
+    return {
+      success: true,
+      message: 'User updated successfully',
+    }
+  } catch (error) {
+    return { success: false, message: formatError(error) }
+  }
+}
 
 export async function updateUserAddress(data: ShippingAddress) {
   try {
