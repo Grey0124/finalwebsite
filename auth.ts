@@ -53,6 +53,7 @@ export const config = {
   callbacks: {
     jwt: async ({ token, user, trigger, session }: any) => {
       if (user) {
+        token.role = user.role
         if (trigger === 'signIn' || trigger === 'signUp') {
           const cookieStore = await cookies()
           const sessionCartId = cookieStore.get('sessionCartId')?.value
@@ -79,10 +80,12 @@ export const config = {
       if (session?.user.name && trigger === 'update') {
         token.name = session.user.name
       }
+      
       return token
     },
     session: async ({ session, user, trigger, token }: any) => {
       session.user.id = token.sub
+      session.user.role = token.role
       if (trigger === 'update') {
         session.user.name = user.name
       }
