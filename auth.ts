@@ -8,6 +8,7 @@ import db from './db/drizzle'
 import { carts, users } from './db/schema'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
+import Google from 'next-auth/providers/google'
 
 export const config = {
   pages: {
@@ -48,6 +49,9 @@ export const config = {
         }
         return null
       },
+    }),
+    Google({
+      allowDangerousEmailAccountLinking: true,
     }),
   ],
   callbacks: {
