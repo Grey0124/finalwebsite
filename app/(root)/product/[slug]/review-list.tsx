@@ -51,6 +51,7 @@ import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useInView } from 'react-intersection-observer'
 import { z } from 'zod'
+import ReviewChatbot from './review-chatbot'
 
 export default function ReviewList({
   userId,
@@ -101,6 +102,7 @@ export default function ReviewList({
   })
   const [open, setOpen] = useState(false)
   const { toast } = useToast()
+  const [useChatbot, setUseChatbot] = useState(false)
 
   const onSubmit: SubmitHandler<CustomerReview> = async (values) => {
     const res = await createUpdateReview({ ...values, productId })
@@ -132,104 +134,123 @@ export default function ReviewList({
     <div className="space-y-4">
       {reviews.length === 0 && <div>No reviews yet</div>}
       {userId ? (
-        <Dialog open={open} onOpenChange={setOpen}>
-          <Button onClick={handleOpenForm} variant="default">
-            Write a review
-          </Button>
+        <>
+          <div className="flex gap-2">
+            <Button onClick={handleOpenForm} variant="default">
+              Write a review
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setUseChatbot(true)}
+            >
+              Use Review Assistant
+            </Button>
+          </div>
 
-          <DialogContent className="sm:max-w-[425px]">
-            <Form {...form}>
-              <form method="post" onSubmit={form.handleSubmit(onSubmit)}>
-                <DialogHeader>
-                  <DialogTitle>Write a review</DialogTitle>
-                  <DialogDescription>
-                    share your thoughts with other customers
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="flex flex-col gap-5  ">
-                    <FormField
-                      control={form.control}
-                      name="title"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel>Title</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter title" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel>Description</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Enter description"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="rating"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Rating</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value.toString()}
-                          >
+          {useChatbot ? (
+            <ReviewChatbot 
+              userId={userId}
+              productId={productId}
+              onComplete={() => {
+                setUseChatbot(false)
+                reload()
+              }}
+            />
+          ) : (
+            <Dialog open={open} onOpenChange={setOpen}>
+              <Form {...form}>
+                <form method="post" onSubmit={form.handleSubmit(onSubmit)}>
+                  <DialogHeader>
+                    <DialogTitle>Write a review</DialogTitle>
+                    <DialogDescription>
+                      share your thoughts with other customers
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="flex flex-col gap-5  ">
+                      <FormField
+                        control={form.control}
+                        name="title"
+                        render={({ field }) => (
+                          <FormItem className="w-full">
+                            <FormLabel>Title</FormLabel>
                             <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a rating" />
-                              </SelectTrigger>
+                              <Input placeholder="Enter title" {...field} />
                             </FormControl>
-                            <SelectContent>
-                              {Array.from({ length: 5 }).map((_, index) => (
-                                <SelectItem
-                                  key={index}
-                                  value={(index + 1).toString()}
-                                >
-                                  <div className="flex items-center gap-1">
-                                    {index + 1} <StarIcon className="h-4 w-4" />
-                                  </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem className="w-full">
+                            <FormLabel>Description</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Enter description"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div>
+                      <FormField
+                        control={form.control}
+                        name="rating"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Rating</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value.toString()}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select a rating" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {Array.from({ length: 5 }).map((_, index) => (
+                                  <SelectItem
+                                    key={index}
+                                    value={(index + 1).toString()}
+                                  >
+                                    <div className="flex items-center gap-1">
+                                      {index + 1} <StarIcon className="h-4 w-4" />
+                                    </div>
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <DialogFooter>
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="w-full"
-                    disabled={form.formState.isSubmitting}
-                  >
-                    {form.formState.isSubmitting ? 'Submitting...' : 'Submit'}
-                  </Button>
-                </DialogFooter>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
+                  <DialogFooter>
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="w-full"
+                      disabled={form.formState.isSubmitting}
+                    >
+                      {form.formState.isSubmitting ? 'Submitting...' : 'Submit'}
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </Form>
+            </Dialog>
+          )}
+        </>
       ) : (
         <div>
           Please
