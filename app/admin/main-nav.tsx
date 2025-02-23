@@ -22,10 +22,10 @@ const links = [
     title: 'Users',
     href: '/admin/users',
   },
-  {
-    title: 'Settings',
-    href: '/admin/settings',
-  },
+ // {
+   // title: 'Settings',
+    //href: '/admin/settings',
+  //},
 ]
 export default function MainNav({
   className,
